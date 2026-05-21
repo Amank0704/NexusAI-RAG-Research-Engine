@@ -1,0 +1,17 @@
+.vscode/
+venv/
+__pycache__/
+.env
+node_modules/
+*.csv
+*.pkl
+.ipynb_checkpoints/
+.idea/
+.vscode/
+*.h5
+*.pt
+*.pth
+*.onnx
+data/
+models/
+faiss_index/
