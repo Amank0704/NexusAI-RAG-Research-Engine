@@ -77,7 +77,7 @@ rag-agent/
 
 ---
 
-## API Endpoints
+<!-- ## API Endpoints
 
 | Method | Endpoint | Description |
 |--------|----------|-------------|
@@ -87,7 +87,7 @@ rag-agent/
 | `GET` | `/files` | List all indexed files |
 | `DELETE` | `/files/{id}` | Delete file and rebuild index |
 | `GET` | `/history` | Get query history |
-| `DELETE` | `/history` | Clear all history |
+| `DELETE` | `/history` | Clear all history | -->
 
 ---
 
@@ -168,7 +168,7 @@ npm run dev
 
 ---
 
-## Environment Variables
+<!-- ## Environment Variables
 
 | Variable | Required | Description |
 |----------|----------|-------------|
@@ -176,9 +176,9 @@ npm run dev
 | `DATABASE_URL` | ✅ Yes | PostgreSQL connection string |
 | `FAISS_PATH` | No | Default: `faiss_index` |
 | `SERPER_API_KEY` | No | Enables web search tool — [serper.dev](https://serper.dev) |
-| `VITE_API_URL` | ✅ Frontend | Your Render backend URL |
+| `VITE_API_URL` | ✅ Frontend | Your Render backend URL | -->
 
----
+<!-- --- -->
 
 ## How It Works
 
@@ -202,7 +202,7 @@ Response: answer + sources + optional web results
 Saved to PostgreSQL query history
 ```
 
----
+<!-- ---
 
 ## Groq Free Tier Limits
 
@@ -213,7 +213,7 @@ Saved to PostgreSQL query history
 | Tokens / day | 500,000 |
 | Cost | **$0** |
 
----
+--- -->
 
 
 ## License
