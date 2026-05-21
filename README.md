@@ -138,7 +138,7 @@ npm run dev
 
 ---
 
-## Deployment
+<!-- ## Deployment
 
 ### Backend → Render
 
@@ -164,7 +164,7 @@ npm run dev
    ```
    VITE_API_URL=https://your-backend.onrender.com
    ```
-4. Deploy → your live URL is ready
+4. Deploy → your live URL is ready -->
 
 ---
 
