@@ -215,21 +215,6 @@ Saved to PostgreSQL query history
 
 ---
 
-## Resume / Portfolio Value
-
-This project demonstrates:
-
-- ✅ RAG pipeline design and implementation
-- ✅ Vector embeddings and semantic search
-- ✅ Hybrid retrieval (BM25 + cosine similarity)
-- ✅ LLM integration via LangChain
-- ✅ FastAPI with dependency injection and ORM
-- ✅ PostgreSQL schema design and persistence
-- ✅ React 18 with hooks and async state management
-- ✅ Full-stack deployment (Render + Vercel)
-- ✅ Docker containerization
-
----
 
 ## License
 
