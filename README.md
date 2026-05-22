@@ -213,20 +213,6 @@ Open **http://localhost:5173** — the full dashboard is ready.
 
 ---
 
-
-```bash
-cd backend
-docker build -t nexusai-backend .
-docker run -p 8000:8000 \
-  -e GROQ_API_KEY=your_key \
-  -e GOOGLE_API_KEY=your_key \
-  -e DATABASE_URL=your_postgres_url \
-  -e FAISS_PATH=faiss_index \
-  nexusai-backend
-```
-
----
-
 ## How It Works
 
 ### Upload Flow
