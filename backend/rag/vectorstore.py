@@ -1,35 +1,4 @@
-# import os 
-# from langchain_google_genai import GoogleGenerativeAIEmbeddings
-# from langchain_community.vectorstores import FAISS
-
-# _vectorestore = None
-
-# def build_vectorstore(docs):
-#     global _vectorestore
-#     embeddings = GoogleGenerativeAIEmbeddings(
-#         model = "models/embedding-001",
-#         google_api_key=os.getenv("GOOGLE_API_KEY")
-#     )
-    
-#     _vectorestore = FAISS.from_documents(docs, embeddings)
-#     return _vectorestore
-
-# def get_vectorstore():
-#     return _vectorestore
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+# used googe embedding model
 
 
 
