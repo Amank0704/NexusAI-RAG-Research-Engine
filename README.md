@@ -284,7 +284,7 @@ History saved to sidebar search log
 | Groq | 500K tokens/day · 30 req/min | No credit card needed |
 | Google Embeddings | 1,500 req/min | Free tier generous |
 | Serper API | 2,500 searches/month | Optional |
-| Render Web Service | 750 hrs/month | Spins down after 15min idle |
+
 
 
 ---
