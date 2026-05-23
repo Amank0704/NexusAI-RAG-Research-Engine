@@ -410,23 +410,7 @@ function WorkspacePage({ stats, setStats, sessionId, setSessionId, sessions, set
   }
 
   return (
-    // <div style={{ 
-    //   display: "flex", 
-    //   // 2. RESPONSIVE LAYOUT DIRECTION: side-by-side on big screens, stacked on small screens
-    //   flexDirection: isSmallScreen ? "column" : "row", 
-    //   // gap: 24, 
-    //   gap: 20,
-    //   // 3. RESPONSIVE HEIGHT MANAGEMENT: Fills viewport height on desktop, naturally expands on mobile
-    //   height: isSmallScreen ? "auto" : "calc(100vh - 58px)", 
-    //   width: "100%",
-    //   boxSizing: "border-box",
-    //   padding: isSmallScreen ? "16px" : "24px", 
-    //   // 4. PREVENTS OUTSIDE DOUBLE SCROLLBARS: Scroll inner panels on desktop, scroll entire page body on mobile
-    //   overflowX: "hidden",
-      
-    //   overflowY: isSmallScreen ? "auto" : "hidden"
-
-    // }}>
+    
     <div
       style={{
         display: "flex",
