@@ -634,7 +634,8 @@ function DocumentsPage({ indexedFiles, setIndexedFiles, stats, setStats }) {
   }
 
   return (
-    <div style={{ display:"flex", flexDirection:"column", gap:22 }}>
+    // <div style={{ display:"flex", flexDirection:"column", gap:22 }}>
+    <div style={{ display:"flex", flexDirection:"column", gap:24, height:"100%", overflowX:"hidden", maxWidth:1200, margin:"0 auto", width:"95%", paddingRight:20, paddingLeft:20, boxSizing:"border-box" }}>
       <PageHeader title="Documents" sub="All indexed files stored in PostgreSQL · FAISS vector index on disk" />
 
       {alert && <Alert type={alert.type}>{alert.msg}</Alert>}
