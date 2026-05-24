@@ -967,6 +967,7 @@ export default function App() {
         overflow:"hidden"
       }}
     >
+      
       <Topbar sessionTitle={sessionTitle} onExport={()=>{}} hasMessages={false} />
       <div style={{ display:"flex", flex:1, minHeight:0 }}>
         <Sidebar
