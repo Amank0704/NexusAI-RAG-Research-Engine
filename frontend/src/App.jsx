@@ -243,7 +243,7 @@ function Sidebar({ active, setActive, fileCount, sessions, webSearchHistory, cur
 function Topbar({ sessionTitle, onExport, hasMessages }) {
   return (
     <div style={{ background:C.white, borderBottom:`1.5px solid ${C.border}`, height:58, display:"flex", alignItems:"center", padding:"0 28px", gap:12, flexShrink:0 }}>
-      <span style={{ fontFamily:"'Epilogue',sans-serif", fontWeight:700, fontSize:16, color:C.text }}>AI Research Engine</span>
+      <span style={{ fontFamily:"'Epilogue',sans-serif", fontWeight:700, fontSize:16, color:C.text }}>RAG Research Engine</span>
       
       {sessionTitle && <span style={{ fontSize:13, color:C.muted, marginLeft:6 }}>· {sessionTitle}</span>}
       <div style={{ marginLeft:"auto", display:"flex", alignItems:"center", gap:12 }}>
@@ -734,7 +734,7 @@ function WebSearchPage({ onSearch, selectedSearch }) {
         <CardHeader icon="🌐" title="Search the Web" desc="Powered by Serper API · Set SERPER_API_KEY in your .env to enable" />
         <Textarea value={query} onChange={e=>setQuery(e.target.value)} rows={3}
           onKeyDown={e=>{if(e.key==="Enter"&&!e.shiftKey){e.preventDefault();doSearch()}}}
-          placeholder="Search anything on the web…&#10;e.g. Latest AI research trends 2025&#10;e.g. How does LangChain work" />
+          placeholder="Search anything on the web…&#10;e.g. Latest AI research trends 2026&#10;e.g. How does LangChain work" />
         {error && <Alert type="error">{error}</Alert>}
         <Btn onClick={doSearch} disabled={loading||!query.trim()} fullWidth style={{padding:"13px 20px",fontSize:15}}>
           {loading?<><Spinner size={18}/>Searching the web…</>:<>🔍 Search Web</>}
@@ -797,7 +797,8 @@ function StackPage() {
   const stack = [
     {icon:"🤖",name:"Groq · Llama 3.3-70b",role:"LLM",detail:"Free · ultra-fast inference"},
     {icon:"🔗",name:"LangChain 0.2",role:"Framework",detail:"RAG + agent pipeline"},
-    {icon:"🧠",name:"Google Embedding-001",role:"Embeddings",detail:"Via Google Generative AI"},
+    // {icon:"🧠",name:"Google Embedding-001",role:"Embeddings",detail:"Via Google Generative AI"},
+    {icon:"🤗",name:"HuggingFace MiniLM",role:"Embeddings",detail:"Using sentence-transformers/all-MiniLM-L6-v2"},
     {icon:"📦",name:"FAISS",role:"Vector DB",detail:"Disk-persisted · cosine"},
     {icon:"🔍",name:"BM25 + Vector",role:"Hybrid Search",detail:"Ensemble 40/60"},
     {icon:"🗄",name:"PostgreSQL",role:"Database",detail:"Sessions + history + files"},
@@ -969,8 +970,11 @@ export default function App() {
       <Topbar sessionTitle={sessionTitle} onExport={()=>{}} hasMessages={false} />
       <div style={{ display:"flex", flex:1, minHeight:0 }}>
         <Sidebar
-          active={active} setActive={setActive} fileCount={indexedFiles.length}
-          sessions={sessions} webSearchHistory={webSearchHistory}
+          active={active} 
+          setActive={setActive} 
+          fileCount={indexedFiles.length}
+          sessions={sessions} 
+          webSearchHistory={webSearchHistory}
           currentSessionId={sessionId}
           onSelectSession={handleSelectSession}
           onNewChat={handleNewChat}

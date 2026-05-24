@@ -1,4 +1,4 @@
-# NexusAI — AI Research Engine
+# NexusAI 
 
 <div align="center">
 
@@ -21,7 +21,9 @@
 
 NexusAI is a **production-ready, full-stack AI research engine** that lets you upload PDF documents and query them using a powerful AI pipeline. Every answer is grounded in your actual documents — with source file, page number, and text snippet returned alongside the response.
 
-The system uses **Retrieval-Augmented Generation (RAG)** with hybrid BM25 + vector search, a **Groq-hosted Llama 3.3-70b** LLM for ultra-fast inference, **Google Generative AI embeddings**, and a clean React dashboard with chat-style interface, persistent sessions, and a dedicated web search page.
+<!-- The system uses **Retrieval-Augmented Generation (RAG)** with hybrid BM25 + vector search, a **Groq-hosted Llama 3.3-70b** LLM for ultra-fast inference, **Google Generative AI embeddings**, and a clean React dashboard with chat-style interface, persistent sessions, and a dedicated web search page. -->
+
+The system uses **Retrieval-Augmented Generation (RAG)** with hybrid BM25 + vector search, a **Groq-hosted Llama 3.3-70b** LLM for ultra-fast inference, **HuggingFace sentence-transformer embeddings (all-MiniLM-L6-v2)**, and a clean React dashboard with chat-style interface, persistent sessions, and a dedicated web search page. 
 
 Built as a **portfolio project** to demonstrate real-world AI engineering skills across the complete stack.
 
@@ -33,7 +35,8 @@ Built as a **portfolio project** to demonstrate real-world AI engineering skills
 - **Multi-Document RAG** — Upload and query multiple PDFs simultaneously with chunk-level retrieval
 - **Hybrid Search** — BM25 keyword search (40%) + FAISS vector similarity (60%) ensemble
 - **Groq LLM** — Llama 3.3-70b-versatile via Groq's free, ultra-fast inference API
-- **Google Embeddings** — `embedding-001` model for high-quality semantic vectors
+<!-- - **Google Embeddings** — `embedding-001` model for high-quality semantic vectors -->
+- **HuggingFace Embeddings** — `sentence-transformers/all-MiniLM-L6-v2` model for efficient semantic vector generation
 - **Source Attribution** — Every answer includes source file, page number, and text snippet
 - **Auto Document Summary** — Each PDF is automatically summarized on upload via Groq
 
@@ -61,7 +64,8 @@ Built as a **portfolio project** to demonstrate real-world AI engineering skills
 | Layer | Technology | Purpose | Detail |
 |-------|-----------|---------|--------|
 | 🤖 LLM | Groq · Llama 3.3-70b | Inference | Free · 500K tokens/day |
-| 🧠 Embeddings | Google embedding-001 | Vectors | Via Google Generative AI |
+<!-- | 🧠 Embeddings | Google embedding-001 | Vectors | Via Google Generative AI | -->
+| 🧠 Embeddings | HuggingFace MiniLM | Semantic Vectors | Using sentence-transformers/all-MiniLM-L6-v2 |
 | 🔗 Framework | LangChain 0.2 | Orchestration | RAG pipeline + tools |
 | 📦 Vector DB | FAISS | Similarity search | Disk-persisted |
 | 🔍 Retrieval | BM25 + Vector | Hybrid search | Ensemble 40% / 60% |
@@ -206,6 +210,7 @@ Open **http://localhost:5173** — the full dashboard is ready.
 |----------|----------|-------------|-------|
 | `GROQ_API_KEY` | ✅ Backend | [console.groq.com](https://console.groq.com) | Free · no credit card |
 | `GOOGLE_API_KEY` | ✅ Backend | [aistudio.google.com](https://aistudio.google.com) | Used for embeddings only |
+| `HF_TOKEN` | Optional | https://huggingface.co/settings/tokens | Used for faster HuggingFace model downloads and higher rate limits |
 | `DATABASE_URL` | ✅ Backend | Render / local PostgreSQL | Must start with `postgresql://` |
 | `FAISS_PATH` | No | — | Default: `faiss_index` |
 | `SERPER_API_KEY` | No | [serper.dev](https://serper.dev) | Enables web search · 2500 free/mo |
@@ -224,8 +229,8 @@ PyPDFLoader → pages extracted
 RecursiveCharacterTextSplitter
     800 char chunks · 100 char overlap
     ↓
-Google embedding-001
-    768-dimensional vectors
+HuggingFace all-MiniLM-L6-v2
+    384-dimensional semantic vectors
     ↓
 FAISS index → saved to disk
 PostgreSQL → filename, chunks, size, uploaded_at
@@ -282,6 +287,7 @@ History saved to sidebar search log
 | Service | Free Limit | Notes |
 |---------|-----------|-------|
 | Groq | 500K tokens/day · 30 req/min | No credit card needed |
+| HuggingFace Embeddings | Free local inference | Runs locally using sentence-transformers |
 | Google Embeddings | 1,500 req/min | Free tier generous |
 | Serper API | 2,500 searches/month | Optional |
 
