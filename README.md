@@ -64,7 +64,6 @@ Built as a **portfolio project** to demonstrate real-world AI engineering skills
 | Layer | Technology | Purpose | Detail |
 |-------|-----------|---------|--------|
 | 🤖 LLM | Groq · Llama 3.3-70b | Inference | Free · 500K tokens/day |
-<!-- | 🧠 Embeddings | Google embedding-001 | Vectors | Via Google Generative AI | -->
 | 🧠 Embeddings | HuggingFace MiniLM | Semantic Vectors | Using sentence-transformers/all-MiniLM-L6-v2 |
 | 🔗 Framework | LangChain 0.2 | Orchestration | RAG pipeline + tools |
 | 📦 Vector DB | FAISS | Similarity search | Disk-persisted |
@@ -74,6 +73,7 @@ Built as a **portfolio project** to demonstrate real-world AI engineering skills
 | ⚛ Frontend | React 18 + Vite | UI | Tailwind CSS v4 |
 | 🌐 Web Search | Serper API | Live search | Optional · 2500 free/mo |
 
+<!-- | 🧠 Embeddings | Google embedding-001 | Vectors | Via Google Generative AI | -->
 ---
 
 ## Project Structure
