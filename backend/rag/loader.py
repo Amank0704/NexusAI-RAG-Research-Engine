@@ -8,7 +8,9 @@ from typing import List
 
 def load_and_split_pdfs(paths: List[str], original_names: List[str] = None):
     all_docs = []
-    splitter = RecursiveCharacterTextSplitter(chunk_size=800, chunk_overlap=100)
+    splitter = RecursiveCharacterTextSplitter(
+        chunk_size=800, 
+        chunk_overlap=100)
 
     for i, path in enumerate(paths):
         try:

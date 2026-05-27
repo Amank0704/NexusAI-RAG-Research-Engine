@@ -78,7 +78,7 @@
 
 
 # final update
-
+# used hugging face embedding model
 import os
 import shutil
 
@@ -119,9 +119,7 @@ def _get_embeddings():
 def build_vectorstore(docs):
 
     global _vectorstore
-
     embeddings = _get_embeddings()
-
     index_file = os.path.join(FAISS_PATH, "index.faiss")
 
 
@@ -129,7 +127,6 @@ def build_vectorstore(docs):
     if os.path.exists(index_file):
 
         try:
-
             _vectorstore = FAISS.load_local(
                 FAISS_PATH,
                 embeddings,
@@ -142,9 +139,7 @@ def build_vectorstore(docs):
             existing_sources = set()
 
             for d in _vectorstore.docstore._dict.values():
-
                 source = d.metadata.get("source")
-
                 if source:
                     existing_sources.add(source)
 
@@ -175,16 +170,11 @@ def build_vectorstore(docs):
                 embeddings
             )
 
-
-    # CREATE NEW INDEX
-
     else:
-
         _vectorstore = FAISS.from_documents(
             docs,
             embeddings
         )
-
         print("🆕 New FAISS index created")
 
 
@@ -204,11 +194,8 @@ def build_vectorstore(docs):
 def load_vectorstore():
 
     global _vectorstore
-
     embeddings = _get_embeddings()
-
     index_file = os.path.join(FAISS_PATH, "index.faiss")
-
     if os.path.exists(index_file):
 
         try:
@@ -231,27 +218,20 @@ def load_vectorstore():
         print("ℹ️ No existing FAISS index found")
 
 
-# =========================================================
 # GET VECTORSTORE
-# =========================================================
 
 def get_vectorstore():
 
     return _vectorstore
 
-# =========================================================
 # RESET VECTORSTORE
-# =========================================================
 
 def reset_vectorstore():
 
     global _vectorstore
     _vectorstore = None
-
     if os.path.exists(FAISS_PATH):
-
         shutil.rmtree(FAISS_PATH)
-
         print("🗑️ FAISS index deleted from disk")
 
     print("🗑️ Vectorstore cleared from memory")
