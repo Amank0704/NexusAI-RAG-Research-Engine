@@ -72,7 +72,7 @@ const Alert = ({ type="success", children }) => {
 }
 
 const Card = ({ children, style={} }) => (
-  <div style={{ background:C.white, border:`1.5px solid ${C.border}`, borderRadius:12, padding:24, ...style }}>{children}</div>
+  <div style={{ background:C.white, border:`2px solid ${C.border}`, borderRadius:12, padding:24, ...style }}>{children}</div>
 )
 
 const CardHeader = ({ icon, title, desc }) => (
@@ -114,7 +114,7 @@ const PageHeader = ({ title, sub, action }) => (
 
 function SourceCard({ source, index }) {
   return (
-    <div style={{ display:"flex", gap:12, padding:14, background:C.white, border:`1px solid ${C.border}`, borderRadius:8 }}>
+    <div style={{ display:"flex", gap:12, padding:14, background:C.white, border:`2px solid ${C.border}`, borderRadius:8 }}>
       <Badge color="amber">#{index+1}</Badge>
       <div>
         <div style={{ fontSize:13, fontWeight:600, color:C.text }}>{source.source?.split("/").pop()||"document"}</div>
@@ -243,9 +243,9 @@ function Sidebar({ active, setActive, fileCount, sessions, webSearchHistory, cur
 function Topbar({ sessionTitle, onExport, hasMessages }) {
   return (
     <div style={{ background:C.white, borderBottom:`1.5px solid ${C.border}`, height:58, display:"flex", alignItems:"center", padding:"0 28px", gap:12, flexShrink:0 }}>
-      <span style={{ fontFamily:"'Epilogue',sans-serif", fontWeight:700, fontSize:16, color:C.text }}>RAG Research Engine</span>
+      {/* <span style={{ fontFamily:"'Epilogue',sans-serif", fontWeight:700, fontSize:16, color:C.text }}>RAG Research Engine</span>
       
-      {sessionTitle && <span style={{ fontSize:13, color:C.muted, marginLeft:6 }}>· {sessionTitle}</span>}
+      {sessionTitle && <span style={{ fontSize:13, color:C.muted, marginLeft:6 }}>· {sessionTitle}</span>} */}
       <div style={{ marginLeft:"auto", display:"flex", alignItems:"center", gap:12 }}>
         {hasMessages && <Btn variant="outline" size="sm" onClick={onExport}>⬇ Export</Btn>}
         <div style={{ display:"flex", alignItems:"center", gap:7, fontSize:13, color:C.muted }}>
@@ -316,13 +316,13 @@ function ChatThread({ messages }) {
           <div style={{ display:"flex", gap:12 }}>
             <div style={{ width:32, height:32, borderRadius:"50%", background:C.blueLt, display:"flex", alignItems:"center", justifyContent:"center", fontSize:16, flexShrink:0 }}>🤖</div>
             <div style={{ flex:1, display:"flex", flexDirection:"column", gap:10 }}>
-              <div style={{ background:C.white, border:`1px solid ${C.border}`, borderRadius:"4px 14px 14px 14px", padding:"14px 18px", fontSize:14, color:C.text, lineHeight:1.9, whiteSpace:"pre-wrap" }}>
+              <div style={{ background:C.white, border:`2px solid ${C.border}`, borderRadius:"4px 14px 14px 14px", padding:"14px 18px", fontSize:14, color:C.text, lineHeight:1.9, whiteSpace:"pre-wrap" }}>
                 {m.loading ? <span style={{color:C.muted,display:"flex",alignItems:"center",gap:8}}><Spinner size={14}/> Thinking…</span> : m.answer}
               </div>
               {m.sources?.length > 0 && (
                 <div>
-                  <div style={{ fontSize:11, fontWeight:600, color:C.muted, textTransform:"uppercase", letterSpacing:"0.8px", marginBottom:8 }}>📌 Sources</div>
-                  <div style={{ display:"flex", flexDirection:"column", gap:6 }}>
+                  <div style={{ fontSize:11, fontWeight:600, color:C.muted, textTransform:"uppercase", letterSpacing:"0.8px", marginBottom:4 }}>📌 Sources</div>
+                  <div style={{ display:"flex",  flexWrap:"wrap", gap:6  }}>
                     {m.sources.map((s,j) => <SourceCard key={j} source={s} index={j} />)}
                   </div>
                 </div>
@@ -441,12 +441,12 @@ function WorkspacePage({ stats, setStats, sessionId, setSessionId, sessions, set
       }}> */}
       <div
         style={{
-          width: isSmallScreen ? "100%" : 360,
+          // width: isSmallScreen ? "100%" : 360,
+          width: isSmallScreen ? "100%" : 260,
           flexShrink: 0,
 
           display: "flex",
           flexDirection: "column",
-
           gap: 16,
 
           height: isSmallScreen
@@ -538,7 +538,7 @@ function WorkspacePage({ stats, setStats, sessionId, setSessionId, sessions, set
           flexDirection:"column",
           minHeight:isSmallScreen ? "600px" : 0,
           background:C.white,
-          border:`1.5px solid ${C.border}`,
+          border:`2px solid ${C.border}`,
           borderRadius:12,
           overflow:"hidden",
           width:isSmallScreen ? "100%" : "auto"
@@ -607,7 +607,7 @@ function WorkspacePage({ stats, setStats, sessionId, setSessionId, sessions, set
               {loading?<Spinner/>:"▶ Send"}
             </Btn>
           </div>
-          <div style={{ fontSize:12, color:C.muted }}>Enter to send · Shift+Enter for new line · Sources included in every answer</div>
+          {/* <div style={{ fontSize:12, color:C.muted }}>Enter to send · Shift+Enter for new line · Sources included in every answer</div> */}
         </div>
       </div>
     </div>
@@ -969,7 +969,7 @@ export default function App() {
       }}
     >
       
-      <Topbar sessionTitle={sessionTitle} onExport={()=>{}} hasMessages={false} />
+      {/* <Topbar sessionTitle={sessionTitle} onExport={()=>{}} hasMessages={false} /> */}
       <div style={{ display:"flex", flex:1, minHeight:0 }}>
         <Sidebar
           active={active} 
