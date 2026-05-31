@@ -56,7 +56,9 @@ class NewSessionRequest(BaseModel):
 @app.get("/")
 def root():
     return {"status": "Nexus RAG API running"}
-
+@app.get("/health")
+def health():
+    return {"status": "healthy"}
 
 # ── Upload ────────────────────────────────────────────────────────────────────
 @app.post("/upload")
