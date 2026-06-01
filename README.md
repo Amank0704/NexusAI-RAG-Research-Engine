@@ -1,4 +1,4 @@
-# NexusAI 
+# NexusAI - AI Research Engine
 
 <div align="center">
 
