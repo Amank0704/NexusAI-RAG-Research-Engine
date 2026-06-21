@@ -289,8 +289,8 @@ from tools.search_tool import web_search as do_web_search
 load_dotenv()
 
 app = FastAPI(
-    title="CortexFlow API",
-    description="CortexFlow — AI RAG Research Engine (anonymous session isolation)",
+    title="NexusAI API",
+    description="NexusAI — AI RAG Research Engine (anonymous session isolation)",
     version="2.0.0",
 )
 
@@ -335,7 +335,7 @@ def rate_limit(session_id: str, max_requests: int = 30, window_minutes: int = 1)
 @app.on_event("startup")
 def on_startup():
     init_db()
-    print("🚀 CortexFlow API started — anonymous session mode")
+    print("🚀 NexusAI API started — anonymous session mode")
 
 
 class QueryRequest(BaseModel):
@@ -350,7 +350,7 @@ class WebSearchRequest(BaseModel):
 # ── Health ────────────────────────────────────────────────────────────────────
 @app.get("/")
 def root():
-    return {"status": "CortexFlow API running", "version": "2.0.0"}
+    return {"status": "NexusAI API running", "version": "2.0.0"}
 
 
 @app.get("/health")
