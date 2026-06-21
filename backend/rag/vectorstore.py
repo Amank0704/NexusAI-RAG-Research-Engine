@@ -79,34 +79,198 @@
 
 # final update
 # used hugging face embedding model
+# import os
+# import shutil
+
+# from langchain_huggingface import HuggingFaceEmbeddings
+# from langchain_community.vectorstores import FAISS
+
+# FAISS_PATH = os.getenv("FAISS_PATH", "faiss_index")
+
+# _vectorstore = None
+# _embeddings = None
+
+
+# # EMBEDDINGS
+
+# def _get_embeddings():
+
+#     global _embeddings
+#     if _embeddings is None:
+
+#         _embeddings = HuggingFaceEmbeddings(
+#             model_name="sentence-transformers/all-MiniLM-L6-v2",
+#             model_kwargs={"device": "cpu"},
+#             encode_kwargs={"normalize_embeddings": True},
+#         )
+
+#         print("✅ HuggingFace embeddings loaded")
+
+#     return _embeddings
+
+# # def _get_embeddings():
+# #     return GoogleGenerativeAIEmbeddings(
+# #         model="models/gemini-embedding-001",
+# #         google_api_key=os.getenv("GOOGLE_API_KEY"),
+# #     )
+
+# # BUILD / APPEND VECTORSTORE
+# def build_vectorstore(docs):
+
+#     global _vectorstore
+#     embeddings = _get_embeddings()
+#     index_file = os.path.join(FAISS_PATH, "index.faiss")
+
+
+#     # LOAD EXISTING INDEX
+#     if os.path.exists(index_file):
+
+#         try:
+#             _vectorstore = FAISS.load_local(
+#                 FAISS_PATH,
+#                 embeddings,
+#                 allow_dangerous_deserialization=True
+#             )
+#             print("✅ Existing FAISS loaded")
+
+           
+#             # REMOVE DUPLICATE FILES
+#             existing_sources = set()
+
+#             for d in _vectorstore.docstore._dict.values():
+#                 source = d.metadata.get("source")
+#                 if source:
+#                     existing_sources.add(source)
+
+#             new_docs = [
+#                 d for d in docs
+#                 if d.metadata.get("source") not in existing_sources
+#             ]
+
+#             if not new_docs:
+
+#                 print("⚠️ All uploaded documents already exist")
+#                 return _vectorstore
+
+
+#             # APPEND NEW DOCS
+#             _vectorstore.add_documents(new_docs)
+
+#             print(f"➕ Added {len(new_docs)} new chunks")
+
+#         except Exception as e:
+
+#             print(f"⚠️ Error loading FAISS: {e}")
+
+#             print("🆕 Creating fresh FAISS index")
+
+#             _vectorstore = FAISS.from_documents(
+#                 docs,
+#                 embeddings
+#             )
+
+#     else:
+#         _vectorstore = FAISS.from_documents(
+#             docs,
+#             embeddings
+#         )
+#         print("🆕 New FAISS index created")
+
+
+#     # SAVE INDEX
+
+#     _vectorstore.save_local(FAISS_PATH)
+
+#     print("💾 FAISS index saved")
+#     print(f"📦 Total vectors in DB: {_vectorstore.index.ntotal}")
+
+#     return _vectorstore
+
+
+
+# # LOAD VECTORSTORE ON STARTUP
+
+# def load_vectorstore():
+
+#     global _vectorstore
+#     embeddings = _get_embeddings()
+#     index_file = os.path.join(FAISS_PATH, "index.faiss")
+#     if os.path.exists(index_file):
+
+#         try:
+
+#             _vectorstore = FAISS.load_local(
+#                 FAISS_PATH,
+#                 embeddings,
+#                 allow_dangerous_deserialization=True
+#             )
+
+#             print(f"✅ FAISS index loaded from {FAISS_PATH}")
+#             print(f"📦 Total vectors: {_vectorstore.index.ntotal}")
+
+#         except Exception as e:
+
+#             print(f"⚠️ Could not load FAISS index: {e}")
+
+#     else:
+
+#         print("ℹ️ No existing FAISS index found")
+
+
+# # GET VECTORSTORE
+
+# def get_vectorstore():
+
+#     return _vectorstore
+
+# # RESET VECTORSTORE
+
+# def reset_vectorstore():
+
+#     global _vectorstore
+#     _vectorstore = None
+#     if os.path.exists(FAISS_PATH):
+#         shutil.rmtree(FAISS_PATH)
+#         print("🗑️ FAISS index deleted from disk")
+
+#     print("🗑️ Vectorstore cleared from memory")
+
+
+
+
+
+
+
+
+
+
+# v3 adding session isolation with google authentication
+
 import os
+import re
 import shutil
 
 from langchain_huggingface import HuggingFaceEmbeddings
 from langchain_community.vectorstores import FAISS
 
-FAISS_PATH = os.getenv("FAISS_PATH", "faiss_index")
+FAISS_BASE = os.getenv("FAISS_PATH", "faiss_indexes")
 
-_vectorstore = None
+# Per-session in-memory cache: { session_id: FAISS }
+_vectorstores: dict = {}
 _embeddings = None
 
 
-# EMBEDDINGS
+# ── EMBEDDINGS ──────────────────────────────────────────────────────────────
 
 def _get_embeddings():
-
     global _embeddings
-
     if _embeddings is None:
-
         _embeddings = HuggingFaceEmbeddings(
             model_name="sentence-transformers/all-MiniLM-L6-v2",
             model_kwargs={"device": "cpu"},
             encode_kwargs={"normalize_embeddings": True},
         )
-
         print("✅ HuggingFace embeddings loaded")
-
     return _embeddings
 
 # def _get_embeddings():
@@ -115,30 +279,45 @@ def _get_embeddings():
 #         google_api_key=os.getenv("GOOGLE_API_KEY"),
 #     )
 
-# BUILD / APPEND VECTORSTORE
-def build_vectorstore(docs):
 
-    global _vectorstore
+# ── SESSION PATH HELPERS ─────────────────────────────────────────────────────
+
+def _sanitize_session_id(session_id: str) -> str:
+    """Prevent path traversal — only allow safe UUID-like characters."""
+    cleaned = re.sub(r"[^a-zA-Z0-9_-]", "", session_id)
+    if not cleaned or len(cleaned) > 100:
+        raise ValueError("Invalid session_id")
+    return cleaned
+
+
+def _session_path(session_id: str) -> str:
+    safe_id = _sanitize_session_id(session_id)
+    return os.path.join(FAISS_BASE, safe_id)
+
+
+# ── BUILD / APPEND VECTORSTORE (per session) ─────────────────────────────────
+
+def build_vectorstore(session_id: str, docs):
+    """Create, or append to, the FAISS index for this session."""
     embeddings = _get_embeddings()
-    index_file = os.path.join(FAISS_PATH, "index.faiss")
+    session_path = _session_path(session_id)
+    index_file = os.path.join(session_path, "index.faiss")
 
+    vectorstore = None
 
-    # LOAD EXISTING INDEX
+    # LOAD EXISTING INDEX FOR THIS SESSION
     if os.path.exists(index_file):
-
         try:
-            _vectorstore = FAISS.load_local(
-                FAISS_PATH,
+            vectorstore = FAISS.load_local(
+                session_path,
                 embeddings,
                 allow_dangerous_deserialization=True
             )
-            print("✅ Existing FAISS loaded")
+            print(f"✅ Existing FAISS loaded — session={session_id[:8]}…")
 
-           
-            # REMOVE DUPLICATE FILES
+            # REMOVE DUPLICATE FILES (dedupe by source within this session only)
             existing_sources = set()
-
-            for d in _vectorstore.docstore._dict.values():
+            for d in vectorstore.docstore._dict.values():
                 source = d.metadata.get("source")
                 if source:
                     existing_sources.add(source)
@@ -149,89 +328,77 @@ def build_vectorstore(docs):
             ]
 
             if not new_docs:
-
-                print("⚠️ All uploaded documents already exist")
-                return _vectorstore
-
+                print(f"⚠️ All uploaded documents already exist — session={session_id[:8]}…")
+                _vectorstores[session_id] = vectorstore
+                return vectorstore
 
             # APPEND NEW DOCS
-            _vectorstore.add_documents(new_docs)
-
-            print(f"➕ Added {len(new_docs)} new chunks")
+            vectorstore.add_documents(new_docs)
+            print(f"➕ Added {len(new_docs)} new chunks — session={session_id[:8]}…")
 
         except Exception as e:
-
             print(f"⚠️ Error loading FAISS: {e}")
-
-            print("🆕 Creating fresh FAISS index")
-
-            _vectorstore = FAISS.from_documents(
-                docs,
-                embeddings
-            )
+            print(f"🆕 Creating fresh FAISS index — session={session_id[:8]}…")
+            vectorstore = FAISS.from_documents(docs, embeddings)
 
     else:
-        _vectorstore = FAISS.from_documents(
-            docs,
-            embeddings
-        )
-        print("🆕 New FAISS index created")
-
+        vectorstore = FAISS.from_documents(docs, embeddings)
+        print(f"🆕 New FAISS index created — session={session_id[:8]}…")
 
     # SAVE INDEX
+    os.makedirs(session_path, exist_ok=True)
+    vectorstore.save_local(session_path)
+    _vectorstores[session_id] = vectorstore
 
-    _vectorstore.save_local(FAISS_PATH)
+    print(f"💾 FAISS index saved — session={session_id[:8]}…")
+    print(f"📦 Total vectors in DB: {vectorstore.index.ntotal}")
 
-    print("💾 FAISS index saved")
-    print(f"📦 Total vectors in DB: {_vectorstore.index.ntotal}")
-
-    return _vectorstore
+    return vectorstore
 
 
+# ── LOAD VECTORSTORE ON DEMAND (per session) ─────────────────────────────────
 
-# LOAD VECTORSTORE ON STARTUP
-
-def load_vectorstore():
-
-    global _vectorstore
+def load_vectorstore(session_id: str):
     embeddings = _get_embeddings()
-    index_file = os.path.join(FAISS_PATH, "index.faiss")
+    session_path = _session_path(session_id)
+    index_file = os.path.join(session_path, "index.faiss")
+
     if os.path.exists(index_file):
-
         try:
-
-            _vectorstore = FAISS.load_local(
-                FAISS_PATH,
+            vectorstore = FAISS.load_local(
+                session_path,
                 embeddings,
                 allow_dangerous_deserialization=True
             )
-
-            print(f"✅ FAISS index loaded from {FAISS_PATH}")
-            print(f"📦 Total vectors: {_vectorstore.index.ntotal}")
+            _vectorstores[session_id] = vectorstore
+            print(f"✅ FAISS index loaded — session={session_id[:8]}…")
+            print(f"📦 Total vectors: {vectorstore.index.ntotal}")
+            return vectorstore
 
         except Exception as e:
-
             print(f"⚠️ Could not load FAISS index: {e}")
-
+            return None
     else:
+        print(f"ℹ️ No existing FAISS index found — session={session_id[:8]}…")
+        return None
 
-        print("ℹ️ No existing FAISS index found")
+
+# ── GET VECTORSTORE (cache first, fallback to disk) ──────────────────────────
+
+def get_vectorstore(session_id: str):
+    if session_id not in _vectorstores:
+        return load_vectorstore(session_id)
+    return _vectorstores.get(session_id)
 
 
-# GET VECTORSTORE
+# ── RESET VECTORSTORE (per session) ──────────────────────────────────────────
 
-def get_vectorstore():
+def reset_vectorstore(session_id: str):
+    _vectorstores.pop(session_id, None)
+    session_path = _session_path(session_id)
 
-    return _vectorstore
+    if os.path.exists(session_path):
+        shutil.rmtree(session_path)
+        print(f"🗑️ FAISS index deleted from disk — session={session_id[:8]}…")
 
-# RESET VECTORSTORE
-
-def reset_vectorstore():
-
-    global _vectorstore
-    _vectorstore = None
-    if os.path.exists(FAISS_PATH):
-        shutil.rmtree(FAISS_PATH)
-        print("🗑️ FAISS index deleted from disk")
-
-    print("🗑️ Vectorstore cleared from memory")
+    print(f"🗑️ Vectorstore cleared from memory — session={session_id[:8]}…")
