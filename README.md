@@ -70,7 +70,6 @@ Built as a **portfolio project** to demonstrate real-world AI engineering skills
 | 🔍 Retrieval | BM25 + Vector | Hybrid search | Ensemble 40% / 60% |
 | 🗄 Database | PostgreSQL | Persistence | Sessions + history + files |
 | 🔑 Isolation | UUID + `localStorage` | Anonymous sessions | No login, no passwords stored |
-
 | ⚡ Backend | FastAPI + SQLAlchemy | API | Python 3.11 · Uvicorn |
 | ⚛ Frontend | React 18 + Vite | UI | Tailwind CSS v4 |
 | 🌐 Web Search | Serper API | Live search | Optional · 2500 free/mo |
